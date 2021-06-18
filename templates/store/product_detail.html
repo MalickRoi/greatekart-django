@@ -71,8 +71,8 @@
                             {% if single_product.stock <= 0 %}
                                 <h6 class='text-danger'>En rupture de stock</h6>
                             {% else %}
-                                <a href="#" class="btn  btn-primary"> 
-                                    <span class="text">Add to cart</span> 
+                                <a href="{% url 'add-cart-page' single_product.id %}" class="btn  btn-primary"> 
+                                    <span class="text">Ajouter au panier</span> 
                                     <i class="fas fa-shopping-cart"></i>  
                                 </a>
                             {% endif %}

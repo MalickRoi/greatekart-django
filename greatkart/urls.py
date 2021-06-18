@@ -24,8 +24,8 @@ from .views import home_view
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view, name='home-page'),
-    # path('', include('category.urls')),
     path('store/', include('store.urls')),
+    path('carts/', include('carts.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
