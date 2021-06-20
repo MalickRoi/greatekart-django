@@ -9,7 +9,7 @@
         <div class="collapse navbar-collapse" id="navbarTop4">
             <ul class="navbar-nav mr-auto">
                 <li class="nav-item dropdown">
-                    <a href="#" class="nav-link">   Français </a>
+                    <a href="#" class="nav-link">   Langues </a>
                     
                 </li>
                 <li class="nav-item dropdown">
@@ -51,9 +51,9 @@
                 </div> <!-- col.// -->
                 <a href="{% url 'store-page' %}" class="btn btn-outline-primary">Boutique</a>
                 <div class="col-lg  col-md-6 col-sm-12 col">
-                    <form action="#" class="search">
+                    <form action="{% url 'search-page' %}" class="search" method="GET">
                         <div class="input-group w-100">
-                            <input type="text" class="form-control" style="width:60%;" placeholder="Search">
+                            <input type="text" class="form-control" style="width:60%;" placeholder="Search" name="keyword">
                             
                             <div class="input-group-append">
                             <button class="btn btn-primary" type="submit">
@@ -72,9 +72,9 @@
                                         <a href="./register.html"> Inscription</a>
                                     </div>
                                 </div>
-                                <a href="./cart.html" class="widget-header pl-3 ml-3">
+                                <a href="{% url 'cart-page' %}" class="widget-header pl-3 ml-3">
                                     <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
-                                    <span class="badge badge-pill badge-danger notify">0</span>
+                                    <span class="badge badge-pill badge-danger notify">{{cart_count}}</span>
                                 </a>
                             </div> <!-- widgets-wrap.// -->
                         </div> <!-- col.// -->
@@ -83,3 +83,4 @@
     </section> <!-- header-main .// -->
     
 </header> <!-- section-header.// -->
+
