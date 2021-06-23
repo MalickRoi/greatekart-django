@@ -61,26 +61,40 @@
                             </button>
                             </div>
                         </div>
-                    </form> <!-- search-wrap .end// -->
-                </div> <!-- col.// -->
+                    </form>
+                </div>
+
                 <div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
-                            <div class="d-flex justify-content-end mb-3 mb-lg-0">
-                                <div class="widget-header">
-                                    <small class="title text-muted">Vous êtes la bienvenue</small>
-                                    <div> 
-                                        <a href="./signin.html">Connexion</a> <span class="dark-transp"> | </span>
-                                        <a href="./register.html"> Inscription</a>
-                                    </div>
+                    <div class="d-flex justify-content-end mb-3 mb-lg-0">
+                        {% if user.id is not None %}
+                            <div class="widget-header">
+                                <small class="title text-muted">
+                                    Welcome {{user.first_name|capfirst}} 
+                                </small>
+                                <div> 
+                                    <a href="{% url 'dashboard-page' %}">Dashboard</a> <span class="dark-transp"> | </span>
+                                    <a href="{% url 'logout-page' %}"> Déconnexion</a>
                                 </div>
-                                <a href="{% url 'cart-page' %}" class="widget-header pl-3 ml-3">
-                                    <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
-                                    <span class="badge badge-pill badge-danger notify">{{cart_count}}</span>
-                                </a>
-                            </div> <!-- widgets-wrap.// -->
-                        </div> <!-- col.// -->
-            </div> <!-- row.// -->
-        </div> <!-- container.// -->
-    </section> <!-- header-main .// -->
+                            </div>
+                        {% else %}
+                            <div class="widget-header">
+                                <small class="title text-muted">Bienvenue</small>
+                                <div> 
+                                    <a href="{% url 'login-page' %}">Connexion</a> <span class="dark-transp"> | </span>
+                                    <a href="{% url 'register-page' %}"> Inscription</a>
+                                </div>
+                            </div>
+                        {% endif %}
+                        <a href="{% url 'cart-page' %}" class="widget-header pl-3 ml-3">
+                            <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
+                            <span class="badge badge-pill badge-danger notify">{{cart_count}}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     
-</header> <!-- section-header.// -->
+</header>
+
 

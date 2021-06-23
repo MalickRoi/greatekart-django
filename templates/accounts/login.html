@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <!-- ========================= SECTION CONTENT ========================= -->
+    <section class="section-conten padding-y" style="min-height:84vh">
+        
+        <!-- ============================ COMPONENT LOGIN   ================================= -->
+        {% if request.GET.command == 'verification' %}
+            <div 
+                class="container text-center alert alert-info" 
+                role="alert" style="max-width: 1024px; margin-top:100px;"
+            >
+                Merci de vous être inscrit chez nous. Nous vous avons envoyé un e-mail de vérification à votre adresse e-mail [{{request.GET.email}}].
+                <br><br>
+                Déjà vérifié ? <a href="{% url 'login-page' %}">Se connecter</a>
+            </div>
+
+        {% else %}
+
+            <div class="card mx-auto" style="max-width: 380px; margin-top:100px;">
+                
+                <div class="card-body">
+                    {% include 'partials/alerts.html' %}
+                    
+                    <h4 class="card-title mb-4">Connexion</h4>
+
+                    <form action="{% url 'login-page' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="email" class="form-control" placeholder="Adresse email" name="email">
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Mot de passe" name="password">
+                        </div>
+                        
+                        <div class="form-group">
+                            <a href="#" class="float-right">Mot de passe oublié ?</a>                     
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block"> Se connecter  </button>
+                        </div>    
+                    </form>
+                </div>
+            </div>
+        
+            <p class="text-center mt-4">
+                Besoin de vous inscrire ? <a href="{% url 'register-page' %}">Cliquez ici</a>
+            </p>
+            <br><br>
+        {% endif %}
+        <!-- ============================ COMPONENT LOGIN  END.// ================================= -->
+    
+        </section>
+    <!-- ========================= SECTION CONTENT END// ========================= -->
+
+{% endblock %}
+

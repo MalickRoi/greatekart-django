@@ -137,3 +137,18 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # authentification
 AUTH_USER_MODEL = 'accounts.Account'
+
+
+# messages
+from django.contrib.messages import constants as messages
+MESSAGE_TAGS = {
+    messages.ERROR: 'danger',
+}
+
+# Configuration du SMTP
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT: 587
+EMAIL_HOST_USER = 'worldpython3@gmail.com'
+EMAIL_HOST_PASSWORD = 'Malick224'
+EMAIL_USE_TLS = True
+

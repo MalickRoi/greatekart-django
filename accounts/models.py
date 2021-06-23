@@ -39,11 +39,11 @@ class MyAccountManager(BaseUserManager):
 
 
 class Account(AbstractBaseUser):
-    first_name = models.CharField('prénom', max_length=50)
-    last_name = models.CharField('nom', max_length=50)
-    username = models.CharField('nom d\'utilisateur', max_length=50, unique=True)
-    email = models.EmailField(max_length=100, unique=True)
-    phone_number = models.CharField(max_length=20)
+    first_name = models.CharField('votre prénom', max_length=50)
+    last_name = models.CharField('votre nom de famille', max_length=50)
+    username = models.CharField('votre nom d\'utilisateur', max_length=50, unique=True)
+    email = models.EmailField('votre adresse email', max_length=100, unique=True)
+    phone_number = models.CharField('votre numéro de téléphone', max_length=20)
 
     # required
     date_joined = models.DateTimeField(auto_now_add=True)
