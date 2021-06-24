@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, message, send_mail
 
 # Create your views here.
 def register_view(request):
@@ -72,13 +72,6 @@ def login_view(request):
     return render(request, 'accounts/login.html')
 
 
-@login_required(login_url = 'login-page')
-def logout_view(request):
-    auth.logout(request)
-    messages.success(request, 'Vous vous êtes déconnecté.')
-    return redirect('login-page')
-
-
 def activate_view(request, uidb64, token):
     try:
         uid = urlsafe_base64_decode(uidb64).decode()
@@ -96,7 +89,77 @@ def activate_view(request, uidb64, token):
         return redirect('register-page')
 
 
-@login_required(login_url='login-page')
+@login_required(login_url = 'login-page')
+def logout_view(request):
+    auth.logout(request)
+    messages.success(request, 'Vous vous êtes déconnecté.')
+    return redirect('login-page')
+
+
+@login_required(login_url = 'login-page')
 def dashboard_view(request):
     return render(request, 'accounts/dashboard.html')
+
+
+def forgetPassword_view(request):
+    if request.method == 'POST':
+        email = request.POST['email']
+        if Account.objects.filter(email=email).exists():
+            user = Account.objects.get(email__exact=email)
+
+            # email de réinitialisation du mot de passe
+            current_site = get_current_site(request)
+            mail_subject = 'Réinitialisation du mot de passe'
+            message = render_to_string('accounts/reset_password_email.html', {
+                'user': user,
+                'domain': current_site,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user),
+            })
+            to_email = email
+            send_email = EmailMessage(mail_subject, message, to=[to_email])
+            send_email.send()
+
+            messages.success(request, 'Un e-mail de réinitialisation du mot de passe a été envoyé à votre adresse e-mail.')
+            return redirect('login-page')
+        else:
+            messages.error(request, 'Le compte n\'existe pas.')
+            return redirect('forget-pwd-page')
+    return render(request, 'accounts/forget_password.html')
+
+
+def reset_pwd_validate_view(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = Account._default_manager.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, Account.DoesNotExist):
+        user = None
+    
+    if user is not None and default_token_generator.check_token(user, token):
+        request.session['uid'] = uid
+        messages.success(request, 'Veuillez réinitialiser votre mot de passe.')
+        return redirect('reset-pwd-page')
+    else:
+        messages.error(request, 'Ce lien a expiré !')
+        return redirect('login-page')
+
+
+def resetPassword_view(request):
+    if request.method == 'POST':
+        password = request.POST['password']
+        confirm_password = request.POST['confirm_password']
+
+        if password == confirm_password:
+            uid = request.session.get('uid')
+            user = Account.objects.get(pk=uid)
+            user.set_password(password)
+            user.save()
+            messages.success(request, 'Réinitialisation du mot de passe réussie.')
+            return redirect('login-page')
+        else:
+            messages.error(request, 'Les mots de passe ne correspondent pas !')
+            return redirect('reset-pwd-page')
+    else:
+        return render(request, 'accounts/reset_password.html')
+
 
