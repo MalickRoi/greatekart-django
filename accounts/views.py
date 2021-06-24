@@ -154,7 +154,7 @@ def resetPassword_view(request):
             user = Account.objects.get(pk=uid)
             user.set_password(password)
             user.save()
-            messages.success(request, 'Réinitialisation du mot de passe réussie.')
+            messages.success(request, 'Votre mot de passe a été réinitialisé. Veuillez vous connecter.')
             return redirect('login-page')
         else:
             messages.error(request, 'Les mots de passe ne correspondent pas !')
