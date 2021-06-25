@@ -3,6 +3,9 @@ from accounts.forms import RegistrationForm
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+
+from carts.views import _cart_id_view
+from carts.models import Cart, CartItem
 from .models import Account
 
 # vérification de l'email
@@ -63,6 +66,18 @@ def login_view(request):
         user = auth.authenticate(email=email, password=password)
 
         if user is not None:
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id_view(request))
+                is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
+                
+                if is_cart_item_exists:
+                    cart_item = CartItem.objects.filter(cart=cart)
+                    
+                    for item in cart_item:
+                        item.user = user
+                        item.save()
+            except:
+                pass
             auth.login(request, user)
             messages.success(request, 'Vous vous êtes connecté.')
             return redirect('dashboard-page')

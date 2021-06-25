@@ -96,8 +96,8 @@
                         </table>
                     </div> <!-- card.// -->        
                 </aside> <!-- col.// -->
-                <aside class="col-lg-3">
-            
+
+                <aside class="col-lg-3">            
                     <div class="card">
                         <div class="card-body">
                             <dl class="dlist-align">
@@ -116,7 +116,7 @@
                             <p class="text-center mb-3">
                                 <img src="{% static 'images/misc/payments.png' %}" height="26">
                             </p>
-                            <a href="./place-order.html" class="btn btn-primary btn-block"> Passer la commande </a>
+                            <a href="{% url 'checkout-page' %}" class="btn btn-primary btn-block"> Passer la commande </a>
                             <a href="{% url 'store-page' %}" class="btn btn-light btn-block">
                                 Continuer mes achats
                             </a>
