@@ -30,5 +30,5 @@ class CartItem(models.Model):
         return self.product.price * self.quantity    
     class Meta:
         verbose_name = 'Article'
-        verbose_name_plural = 'Articles'
+        verbose_name_plural = 'Articles dans le panier'
 

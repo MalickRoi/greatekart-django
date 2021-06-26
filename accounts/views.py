@@ -1,8 +1,10 @@
 from django.contrib import messages, auth
+from django.db.models import query
 from accounts.forms import RegistrationForm
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+import requests
 
 from carts.views import _cart_id_view
 from carts.models import Cart, CartItem
@@ -69,18 +71,54 @@ def login_view(request):
             try:
                 cart = Cart.objects.get(cart_id=_cart_id_view(request))
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
-                
+                              
                 if is_cart_item_exists:
                     cart_item = CartItem.objects.filter(cart=cart)
                     
+                    # Getting the product variation by cart id
+                    product_variation = []
                     for item in cart_item:
-                        item.user = user
-                        item.save()
+                        variatiation = item.variations.all()
+                        product_variation.append(list(variatiation))
+                    
+                    # Getting the cart items from the user to access his product variations
+                    ex_var_list = []
+                    id = []
+                    cart_item = CartItem.objects.filter(user=user)
+                    for item in cart_item:
+                        existing_variation = item.variations.all()
+                        ex_var_list.append(list(existing_variation))
+                        id.append(item.id)
+                        
+                    for pr in product_variation:
+                        if pr in ex_var_list:
+                            index = ex_var_list.index(pr)
+                            item_id = id[index]
+                            item = CartItem.objects.get(id=item_id)
+                            item.quantity += 1
+                            item.user = user
+                            item.save()
+                        else:
+                            cart_item = CartItem.objects.filter(cart=cart)
+                            for item in cart_item:
+                                item.user = user
+                                item.save()
             except:
                 pass
+            
             auth.login(request, user)
             messages.success(request, 'Vous vous êtes connecté.')
-            return redirect('dashboard-page')
+            
+            url = request.META.get('HTTP_REFERER')
+            
+            try:
+                query = requests.utils.urlparse(url).query
+                params = dict(x.split('=') for x in query.split('&'))
+                if 'next' in params:
+                    nextPage = params['next']
+                    return redirect(nextPage)
+            except:
+                return redirect('dashboard-page')
         else:
             messages.error(request, 'Identifiants incorrects.')
             return redirect('login-page')

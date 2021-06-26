@@ -72,63 +72,65 @@
 
             <aside class="col-lg-6">            
                 <div class="card">
-                    <form class="card-body">
-                        <table class="table table-borderless table-shopping-cart">
-                            <thead class="text-muted">
-                                <tr class="small text-uppercase">
-                                    <th scope="col">Produit</th>
-                                    <th scope="col" width="120">Quantité</th>
-                                    <th scope="col" width="120">Prix</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            {% for cart_item in cart_items %}
-                                <tr>
-                                    <td>
-                                        <figure class="itemside align-items-center">
-                                            <div class="aside">
-                                                <a href="{{ cart_item.product.get_url }}">
-                                                    <img src="{{cart_item.product.images.url}}" class="img-sm">
-                                                </a>
-                                            </div>
-                                            <figcaption class="info">
-                                                <a href="{{ cart_item.product.get_url }}" class="title text-dark">{{cart_item.product.product_name}}</a>
-                                                <p class="text-muted small">
-                                                    {% if cart_item.variations.all %}
-                                                        {% for item in cart_item.variations.all %}
-                                                            {{ item.variation_category | capfirst }} : {{ item.variation_value | capfirst }} <br>
-                                                        {% endfor %}
-                                                    {% endif %}
-                                                </p>
-                                            </figcaption>
-                                        </figure>
-                                    </td>
-                                    
-                                    <td class="text-center"> 
-                                        <label>{{cart_item.quantity}} </label>
-                                    </td>
+                    <div class="card-body">
+                        <form action="" method="POST" class="card-body">
+                            {% csrf_token %}
+                            <table class="table table-borderless table-shopping-cart">
+                                <thead class="text-muted">
+                                    <tr class="small text-uppercase">
+                                        <th scope="col">Produit</th>
+                                        <th scope="col" width="120">Quantité</th>
+                                        <th scope="col" width="120">Prix</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for cart_item in cart_items %}
+                                    <tr>
+                                        <td>
+                                            <figure class="itemside align-items-center">
+                                                <div class="aside">
+                                                    <a href="{{ cart_item.product.get_url }}">
+                                                        <img src="{{cart_item.product.images.url}}" class="img-sm">
+                                                    </a>
+                                                </div>
+                                                <figcaption class="info">
+                                                    <a href="{{ cart_item.product.get_url }}" class="title text-dark">{{cart_item.product.product_name}}</a>
+                                                    <p class="text-muted small">
+                                                        {% if cart_item.variations.all %}
+                                                            {% for item in cart_item.variations.all %}
+                                                                {{ item.variation_category | capfirst }} : {{ item.variation_value | capfirst }} <br>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </p>
+                                                </figcaption>
+                                            </figure>
+                                        </td>
+                                        
+                                        <td class="text-center"> 
+                                            <label>{{cart_item.quantity}} </label>
+                                        </td>
 
-                                    <td> 
-                                        <div class="price-wrap"> 
-                                            <var class="price">${{cart_item.sub_total}}</var> 
-                                            <small class="text-muted"> 
-                                                ${{cart_item.product.price}} l'unité 
-                                            </small> 
-                                        </div> <!-- price-wrap .// -->
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                        
-                        <button type="submit" name="submit" class="btn btn-primary btn-block"> 
-                            Passer la commande 
-                        </button>
-                        
-                        <a href="{% url 'store-page' %}" class="btn btn-light btn-block">
-                            Continuer mes achats
-                        </a>
-                    </form>
+                                        <td> 
+                                            <div class="price-wrap"> 
+                                                <var class="price">${{cart_item.sub_total}}</var> 
+                                                <small class="text-muted"> 
+                                                    ${{cart_item.product.price}} l'unité 
+                                                </small> 
+                                            </div> <!-- price-wrap .// -->
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                            
+                            <button type="submit" name="submit" class="btn btn-primary btn-block"> 
+                                Passer la commande 
+                            </button>
+                            
+                            <a href="{% url 'store-page' %}" class="btn btn-light btn-block">
+                                Continuer mes achats
+                            </a>
+                        </form>
                     </div> <!-- card-body.// -->
                 </div> <!-- card.// -->
         
