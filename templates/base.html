@@ -8,7 +8,12 @@
 <meta http-equiv="cache-control" content="max-age=604800" />
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<title>GreatKart | One of the Biggest Online Shopping Platform</title>
+{% if title %}
+    <title>GreatKart | {{title}} </title>
+{% else %}
+    <title>GreatKart</title>
+{% endif %}
+
 
 <link href="{% static 'images/favicon.ico' %}" rel="shortcut icon" type="image/x-icon">
 
@@ -28,6 +33,9 @@
 
 <!-- custom javascript -->
 <script src="{% static 'js/script.js' %}" type="text/javascript"></script>
+
+<!-- paypal script -->
+<script src="https://www.paypal.com/sdk/js?client-id=ASqcCS1WiBirWNsDyt3bQ6_Wq3w0CDu67pHrfA5GV0vjfQCIKZIJII-d2LbHXmAOvHbCn_JQSZCzHMIv&currency=USD"></script>
 
 <script type="text/javascript">
 /// some script

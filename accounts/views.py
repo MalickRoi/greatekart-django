@@ -49,7 +49,8 @@ def register_view(request):
             send_email = EmailMessage(mail_subject, message, to=[to_email])
             send_email.send()
 
-            # messages.success(request, 'Merci de vous être inscrit chez nous. Nous vous avons envoyé un e-mail de vérification à votre adresse e-mail. Veuillez le vérifier.')
+            # messages.success(request, 'Merci de vous être inscrit chez nous. 
+            # Nous vous avons envoyé un e-mail de vérification à votre adresse e-mail. Veuillez le vérifier.')
             return redirect('/accounts/login/?command=verification&email='+email)
     else:
         form = RegistrationForm()
