@@ -63,3 +63,7 @@ def search_view(request):
     }
     return render(request, 'store/store.html', context)
 
+
+def submit_review(request):
+    pass
+
