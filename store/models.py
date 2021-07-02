@@ -1,5 +1,7 @@
 from django.db import models
+from django.db.models.aggregates import Count
 from django.urls.base import reverse
+from django.db.models import Avg
 from category.models import Category
 from accounts.models import Account
 
@@ -22,6 +24,20 @@ class Product(models.Model):
     
     def get_url(self):
         return reverse('product-detail-page', args=[self.category.slug, self.slug])
+    
+    def averageReview(self):
+        reviews = ReviewRating.objects.filter(product=self, status=True).aggregate(average=Avg('rating'))
+        avg = 0
+        if reviews['average'] is not None:
+            avg = float(reviews['average'])
+        return avg
+    
+    def countReview(self):
+        reviews = ReviewRating.objects.filter(product=self, status=True).aggregate(count=Count('rating'))
+        count = 0
+        if reviews['count'] is not None:
+            count = int(reviews['count'])
+        return count
     
     class Meta:
         verbose_name = 'produit'
@@ -65,9 +81,9 @@ class ReviewRating(models.Model):
     updated_at  = models.DateTimeField(auto_now=True)
     
     def __str__(self):
-        return self.product.product_name
+        return f'{self.product.product_name} - {self.user.first_name} {self.user.last_name}' 
     
     class Meta:
-        verbose_name = 'notation'
+        verbose_name = 'commentaire'
     
 
