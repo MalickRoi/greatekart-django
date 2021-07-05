@@ -7,7 +7,7 @@ from django.core.paginator import EmptyPage, Paginator
 from category.models import Category
 from carts.models import CartItem
 from carts.views import _cart_id_view
-from .models import Product, ReviewRating
+from .models import Product, ProductGallery, ReviewRating
 from .forms import ReviewForm
 
 # Create your views here.
@@ -57,10 +57,15 @@ def product_detail_view(request, category_slug, product_slug):
     # Obtenir les avis
     reviews = ReviewRating.objects.filter(product_id=single_product.id, status=True)
     
+    # Obtenir les images associées au produit
+    product_gallery = ProductGallery.objects.filter(product_id=single_product.id)
+    
     context = {
         'single_product': single_product,
         'in_cart': in_cart,
         'reviews': reviews,
+        'orderproduct': orderproduct,
+        'product_gallery': product_gallery,
     }
     return render(request, 'store/product_detail.html', context)
 

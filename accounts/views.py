@@ -1,14 +1,14 @@
+import requests
 from django.contrib import messages, auth
 from django.db.models import query
-from accounts.forms import RegistrationForm
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
-import requests
 
+from accounts.forms import RegistrationForm, UserForm, UserProfileForm
 from carts.views import _cart_id_view
 from carts.models import Cart, CartItem
-from .models import Account
+from orders.models import Order, OrderProduct
+from .models import Account, UserProfile
 
 # vérification de l'email
 from django.contrib.sites.shortcuts import get_current_site
@@ -35,6 +35,12 @@ def register_view(request):
                                     email=email, username=username, password=password)
             user.phone_number   = phone_number
             user.save()
+            
+            # création du profil utilisateur
+            profile = UserProfile()
+            profile.user_id = user.id
+            profile.profile_picture = 'userprofile/default.png'
+            profile.save()
 
             # activation de l'utilisateur
             current_site = get_current_site(request)
@@ -152,7 +158,16 @@ def logout_view(request):
 
 @login_required(login_url = 'login-page')
 def dashboard_view(request):
-    return render(request, 'accounts/dashboard.html')
+    orders = Order.objects.order_by('-created_at').filter(user_id=request.user.id, is_ordered=True)
+    orders_count = orders.count()
+    
+    userprofile = UserProfile.objects.get(user_id=request.user.id)
+    
+    context = {
+        'orders_count': orders_count,
+        'userprofile': userprofile,
+    }
+    return render(request, 'accounts/dashboard.html', context)
 
 
 def forgetPassword_view(request):
@@ -216,4 +231,78 @@ def resetPassword_view(request):
     else:
         return render(request, 'accounts/reset_password.html')
 
+
+@login_required(login_url='login-page')
+def my_orders_view(request):
+    orders = Order.objects.filter(user=request.user, is_ordered=True).order_by('-created_at')
+    context = {
+        'orders': orders,
+    }
+    return render(request, 'accounts/my_orders.html', context)
+
+
+@login_required(login_url='login-page')
+def edit_profile_view(request):
+    userprofile = get_object_or_404(UserProfile, user=request.user)
+    
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=userprofile)
+        
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, 'Votre profil a été mis à jour.')
+    else:
+        user_form = UserForm(instance=request.user)
+        profile_form = UserProfileForm(instance=userprofile)
+    
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+        'userprofile': userprofile,
+    }
+    return render(request, 'accounts/edit_profile.html', context)
+
+
+@login_required(login_url='login-page')
+def change_password_view(request):
+    if request.method == 'POST':
+        current_password    = request.POST['current_password']
+        new_password        = request.POST['new_password']
+        confirm_password    = request.POST['confirm_password']
+        
+        user = Account.objects.get(username__exact=request.user.username)
+        
+        if new_password == confirm_password:
+            success = user.check_password(current_password)
+            if success:
+                user.set_password(new_password)
+                auth.logout(request)
+                messages.success(request, 'Votre mot de passe a été modifié avec succès.')
+                return redirect('login-page')
+            else:
+                messages.error(request, 'Assurez-vous que le mot de passe actuel est correct.')
+                return redirect('change-pwd-page')
+        else:
+            messages.error(request, 'Les deux mots de passe ne sont pas identiques.')
+            return redirect('change-pwd-page')
+    return render(request, 'accounts/change_password.html')
+
+
+@login_required(login_url='login-page')
+def order_detail_view(request, order_id):
+    order_detail = OrderProduct.objects.filter(order__order_number=order_id)
+    order = Order.objects.get(order_number=order_id)
+    
+    subtotal = 0
+    for i in order_detail:
+        subtotal += i.product_price * i.quantity
+    
+    context = {
+        'order_detail': order_detail,
+        'order': order,
+        'subtotal': subtotal,
+    }
+    return render(request, 'accounts/order_detail.html', context)
 

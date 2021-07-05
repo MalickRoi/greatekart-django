@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import fields
-from .models import Account
+from .models import Account, UserProfile
 
 
 class RegistrationForm(forms.ModelForm):
@@ -36,4 +36,54 @@ class RegistrationForm(forms.ModelForm):
 
         if password != confirm_password:
             raise forms.ValidationError('Les mots de passe ne correspondent pas!')
+
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ['first_name', 'last_name', 'phone_number']
+    
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].widget.attrs.update(
+                                                    {'class': 'form-control', 
+                                                    'placeholder': 'Entrez votre prénom'})
+        self.fields['last_name'].widget.attrs.update(
+                                                    {'class': 'form-control', 
+                                                    'placeholder': 'Entrez votre prénom'})
+        self.fields['phone_number'].widget.attrs.update(
+                                                    {'class': 'form-control', 
+                                                    'placeholder': 'Entrez votre prénom'})
+
+
+class UserProfileForm(forms.ModelForm):
+    profile_picture = forms.ImageField(required=False, error_messages={'invalid': ('Chargez une image')}, widget=forms.FileInput)
+    class Meta:
+        model = UserProfile
+        fields = ['address_line_1', 'address_line_2', 'city', 'state', 'country', 'profile_picture']
+    
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        self.fields['address_line_1'].widget.attrs.update(
+                                                    {'class': 'form-control', 
+                                                    'placeholder': 'Entrez votre prénom'})
+        self.fields['address_line_2'].widget.attrs.update(
+                                                    {'class': 'form-control', 
+                                                    'placeholder': 'Entrez votre prénom'})
+        self.fields['address_line_1'].widget.attrs.update(
+                                                    {'class': 'form-control', 
+                                                    'placeholder': 'Entrez votre prénom'})
+        self.fields['city'].widget.attrs.update(
+                                                    {'class': 'form-control', 
+                                                    'placeholder': 'Entrez votre prénom'})
+        self.fields['state'].widget.attrs.update(
+                                                    {'class': 'form-control', 
+                                                    'placeholder': 'Entrez votre prénom'})
+        self.fields['country'].widget.attrs.update(
+                                                    {'class': 'form-control', 
+                                                    'placeholder': 'Entrez votre prénom'})
+        self.fields['profile_picture'].widget.attrs.update(
+                                                    {'class': 'form-control', 
+                                                    'placeholder': 'Entrez votre prénom'})
+
 
