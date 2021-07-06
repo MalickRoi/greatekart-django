@@ -65,7 +65,7 @@ MIDDLEWARE = [
 # temps avant la déconnexion automatique
 SESSION_EXPIRE_SECONDS = 3600  # 1 hour
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
-SESSION_TIMEOUT_REDIRECT = 'accounts/login'
+SESSION_TIMEOUT_REDIRECT = 'login-page'
 
 ROOT_URLCONF = 'greatkart.urls'
 
@@ -162,4 +162,5 @@ EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST = 'smtp.gmail.com'
 
